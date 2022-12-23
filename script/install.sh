@@ -109,7 +109,7 @@ installNvimConfig() {
 main() {
   printEnv
   installBasicSoft
-  # install_nvim_config
+  installNvimConfig
   installTmuxConfig
   # installZshConfig
 }
