@@ -27,20 +27,23 @@ backupFile() {
   for filename in $*
   do
     debugLog $filename
-    if [[ -f $filename && ! -L $filename ]]
+    if [[ -L $filename ]];
     then
-        debugLog "backup file $filename to $filename$SUFFIX"
-        mv $filename $filename$SUFFIX
+      debugLog "remove link file $filename"
+      rm $filename
+    elif [[ -f $filename || -d $filename ]];
+    then
+      debugLog "backup file $filename to $filename$SUFFIX"
+      mv $filename $filename$SUFFIX
     else
-        debugLog "remove file $filename"
-        rm $filename
+      debugLog "known file $filename"
     fi
   done
 }
 
 installBasicSoft() {
   softList=('git' 'ripgrep' 'fd')
-  for soft in $softList
+  for soft in $softList;
   do
     debugLog $soft
     #sudo apt install -y $soft
@@ -50,12 +53,12 @@ installBasicSoft() {
 
 makeLinkTmuxConfig() {
   infoLog "make link tmux config"
-  
+
   # link .tmux.conf
   TMUX_CONFIG_FILE='.tmux.conf'
   backupFile ~/$TMUX_CONFIG_FILE
   ln -s $WORK_DIR/$TMUX_CONFIG_FILE ~/$TMUX_CONFIG_FILE
-  
+
   # link .tmux.conf.local
   TMUX_CONFIG_LOCAL_FILE='.tmux.conf.local'
   backupFile ~/$TMUX_CONFIG_LOCAL_FILE
@@ -72,7 +75,7 @@ makeLinkZshConfig() {
 gitClone() {
   httpRepo=$1
   destPath=$2
-  if [ -e ~/.oh-my-zsh ]
+  if [ -e ~/.oh-my-zsh ];
   then
     infoLog "${destPath} file exist, ignore it!"
   else
